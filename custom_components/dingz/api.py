@@ -625,11 +625,10 @@ class PIRConfig(FromJSON):
 
 @dataclasses.dataclass()
 class DingzSession:
-    session: aiohttp.ClientSession
     host: str
 
     async def _get(self, path: str):
-        async with self.session.get(f"{self.host}/api/v1{path}") as resp:
+        async with aiohttp.ClientSession().get(f"{self.host}/api/v1{path}") as resp:
             return await resp.json()
 
     def __post_request(self, path: str, data: Optional[dict]):
@@ -642,7 +641,7 @@ class DingzSession:
             body = None
 
         logger.debug("POST %s | %s", path, body)
-        return self.session.post(
+        return aiohttp.ClientSession().post(
             f"{self.host}/api/v1{path}",
             data=body,
             headers=headers,
